@@ -74,38 +74,3 @@ class TDAgent:
             reward + self.discount_factor * max_next_q - old_q_value
         )
         self.q_table[state][action] = new_q_value
-
-if __name__ == "__main__":
-    num_epochs = 500
-    steps_per_epoch = 1000
-
-    env = RecyclingRobotEnvironment(alpha=0.6, beta=0.8, r_search=10, r_wait=2)
-    agent = TDAgent(env)
-    
-    rewards_per_epoch = []
-
-    for epoch in range(num_epochs):
-        current_state = env.reset()
-        total_reward = 0
-        
-        for step in range(steps_per_epoch):
-            action = agent.choose_action(current_state)
-            next_state, reward = env.step(action)
-            agent.update_q_table(current_state, action, reward, next_state)
-            
-            total_reward += reward
-            current_state = next_state
-            
-        rewards_per_epoch.append(total_reward)
-        print(f"Epoch {epoch+1}/{num_epochs}: Total Reward = {total_reward}")
-
-    with open('rewards.txt', 'w') as f:
-        for reward in rewards_per_epoch:
-            f.write(f"{reward}\n")
-
-    print("\nTraining complete. Rewards saved in rewards.txt.")
-    print("Agent's final Q table:")
-    for state, actions in agent.q_table.items():
-            print(f"State: {state}")
-            for action, q_value in actions.items():
-                print(f" - Action '{action}': {q_value:.2f}")
