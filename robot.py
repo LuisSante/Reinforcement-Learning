@@ -50,12 +50,26 @@ class RecyclingRobotEnvironment:
         return self.current_state, reward
 
 class TDAgent:
-    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.1):
+    def __init__(self, env, learning_rate=0.15, discount_factor=0.95, epsilon=0.3, 
+                 epsilon_decay=0.998, epsilon_min=0.01, lr_decay=0.9995, lr_min=0.01):
         self.env = env
         self.q_table = {s: {a: 0.0 for a in env.actions[s]} for s in env.states}
+        
+        # Improved parameters based on problem analysis
+        self.initial_learning_rate = learning_rate
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
+        self.initial_epsilon = epsilon
         self.epsilon = epsilon
+
+        # Decay parameters for better convergence
+        self.epsilon_decay = epsilon_decay
+        self.epsilon_min = epsilon_min
+        self.lr_decay = lr_decay
+        self.lr_min = lr_min
+
+        # Step counter for progress tracking
+        self.step_count = 0
 
     def choose_action(self, state):
         if random.random() < self.epsilon:
@@ -74,3 +88,25 @@ class TDAgent:
             reward + self.discount_factor * max_next_q - old_q_value
         )
         self.q_table[state][action] = new_q_value
+
+        # Increment counter and apply decays
+        self.step_count += 1
+        self._apply_decay()
+    
+    def _apply_decay(self):
+        """Applies gradual decay of parameters for better convergence"""
+        # Decay epsilon (less exploration over time)
+        if self.epsilon > self.epsilon_min:
+            self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+
+        # Decay learning rate (smaller steps over time)
+        if self.learning_rate > self.lr_min:
+            self.learning_rate = max(self.lr_min, self.learning_rate * self.lr_decay)
+    
+    def get_current_params(self):
+        """Auxiliary method to monitor current parameters"""
+        return {
+            'epsilon': self.epsilon,
+            'learning_rate': self.learning_rate,
+            'step_count': self.step_count
+        }
