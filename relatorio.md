@@ -137,17 +137,6 @@ O algoritmo demonstrou convergência através de:
  **Convergência estável** sem oscilações ou estagnação  
  **Performance superior** comparada à implementação inicial  
 
-### 8.2 Lições Aprendidas
-1. **Importância do decaimento adaptivo**: Epsilon e learning rate decay foram cruciais para convergência
-2. **Balanceamento exploração vs exploitação**: Epsilon inicial alto seguido de decaimento gradual
-3. **Sintonia de hiperparâmetros**: Pequenos ajustes geraram melhorias significativas
-4. **Validação empírica**: Gráficos lineares confirmam aprendizado correto
-
-### 8.3 Trabalhos Futuros
-- Implementação de diferentes algoritmos (SARSA, Double Q-Learning)
-- Análise de sensibilidade dos hiperparâmetros
-- Extensão para ambientes mais complexos (múltiplos estados de bateria)
-- Comparação de performance com métodos de planejamento dinâmico
 
 ## 9. Referências
 
